@@ -32,7 +32,7 @@ public class TestController2 {
   }
 
   @TestMethodAnno
-  @RequestMapping(path = "/b")
+  @RequestMapping(value = "/b")
   String home2() {
     return "home2";
   }

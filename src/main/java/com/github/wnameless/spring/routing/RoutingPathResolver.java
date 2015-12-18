@@ -187,10 +187,9 @@ public final class RoutingPathResolver {
       RequestMapping classRM, RequestMapping methodRM) {
     List<Entry<String, RequestMethod>> rawPathsAndMethods = newArrayList();
 
-    RubyArray<String> topPaths = classRM == null ? ra("")
-        : ra(classRM.value()).plus(ra(classRM.path())).uniq();
-    RubyArray<String> lowPaths =
-        ra(methodRM.value()).plus(ra(methodRM.path())).uniq();
+    RubyArray<String> topPaths =
+        classRM == null ? ra("") : ra(classRM.value()).uniq();
+    RubyArray<String> lowPaths = ra(methodRM.value()).uniq();
     if (topPaths.isEmpty()) topPaths.unshift("");
     if (lowPaths.isEmpty()) lowPaths.unshift("");
 
