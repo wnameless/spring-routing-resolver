@@ -56,12 +56,16 @@ public class RoutingPathResolverTest {
 
   RoutingPathResolver pathRes2;
 
+  RoutingPathResolver pathRes3;
+
   @Before
   public void setUp() {
     pathRes = new RoutingPathResolver(appCtx, env,
         "com.github.wnameless.spring.controller");
     pathRes2 = new RoutingPathResolver(appCtx, env,
         "com.github.wnameless.spring.controller2");
+    pathRes3 = new RoutingPathResolver(appCtx, env,
+        "com.github.wnameless.spring.controller3");
   }
 
   @Test
@@ -167,6 +171,17 @@ public class RoutingPathResolverTest {
   @Test
   public void testFindByRequestPath() {
     assertEquals(8, pathRes2.findByRequestPath("/b").size());
+  }
+
+  @Test
+  public void testAntPattern() {
+    RoutingPath rp = pathRes3.getRoutingPaths().get(0);
+    assertEquals(1, pathRes3.getRoutingPaths().size());
+    assertEquals("/ant/${test.var.1}/${test.var.3}/{aaa}/**/*/a+b-c?.json",
+        rp.getRawPath());
+    assertEquals("/ant/haha/yoyo/{aaa}/**/*/a+b-c?.json", rp.getPath());
+    assertEquals("/ant/haha/yoyo/[^/]+/.*/[^/]*/a\\+b\\-c.\\.json",
+        rp.getRegexPath());
   }
 
 }

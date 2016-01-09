@@ -49,6 +49,9 @@ public final class RoutingPathResolver {
 
   private static final Pattern PLACEHOLDER = Pattern.compile("\\$\\{[^}]+\\}");
   private static final Pattern PATH_VAR = Pattern.compile("\\{[^}]+\\}");
+  private static final Pattern ANT_AA = Pattern.compile(Pattern.quote("**"));
+  private static final Pattern ANT_A = Pattern.compile(Pattern.quote("*"));
+  private static final Pattern ANT_Q = Pattern.compile(Pattern.quote("?"));
 
   private Environment env;
   private Set<RoutingPath> routingPaths = newLinkedHashSet();
@@ -213,11 +216,28 @@ public final class RoutingPathResolver {
   }
 
   private String computeRegexPath(String path) {
+    path = path.replaceAll("([\\.\\+\\-])", "\\\\$1");
     Matcher m = PATH_VAR.matcher(path);
     while (m.find()) {
-      String pathVar = m.group();
-      path = path.replace(pathVar, "[^/]+");
+      String match = m.group();
+      path = path.replaceFirst(Pattern.quote(match), "[^/]+");
     }
+    m = ANT_AA.matcher(path);
+    while (m.find()) {
+      String match = m.group();
+      path = path.replaceFirst(Pattern.quote(match), ".\"");
+    }
+    m = ANT_A.matcher(path);
+    while (m.find()) {
+      String match = m.group();
+      path = path.replaceFirst(Pattern.quote(match), "[^/]*");
+    }
+    m = ANT_Q.matcher(path);
+    while (m.find()) {
+      String match = m.group();
+      path = path.replaceFirst(Pattern.quote(match), ".");
+    }
+    path = path.replaceAll(Pattern.quote("\""), "*");
     return path;
   }
 
@@ -232,7 +252,8 @@ public final class RoutingPathResolver {
       String key = keyAndDefault[0];
       String deFault = "";
       if (keyAndDefault.length > 1) deFault = keyAndDefault[1];
-      path = path.replace(placeholder, env.getProperty(key, deFault));
+      path = path.replaceFirst(Pattern.quote(placeholder),
+          env.getProperty(key, deFault));
     }
     return path;
   }
@@ -241,7 +262,7 @@ public final class RoutingPathResolver {
     String pathSeprator = "/";
 
     RubyArray<String> ra = newRubyArray(paths);
-    ra.remove("");
+    ra.delete("");
     for (int i = 1; i < ra.size(); i++) {
       int predecessor = i - 1;
       while (ra.get(predecessor).endsWith(pathSeprator)) {
