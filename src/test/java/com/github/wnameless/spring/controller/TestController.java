@@ -22,7 +22,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.github.wnameless.spring.controller2.TestTypeAnno;
+import com.github.wnameless.spring.controller2.ctrl.TestTypeAnno;
 
 @TestTypeAnno
 @RequestMapping("/home")

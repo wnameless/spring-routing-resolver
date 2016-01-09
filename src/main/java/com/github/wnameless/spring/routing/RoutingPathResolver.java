@@ -237,10 +237,11 @@ public final class RoutingPathResolver {
     return path;
   }
 
-  private String joinPaths(String... files) {
+  private String joinPaths(String... paths) {
     String pathSeprator = "/";
 
-    RubyArray<String> ra = newRubyArray(files);
+    RubyArray<String> ra = newRubyArray(paths);
+    ra.remove("");
     for (int i = 1; i < ra.size(); i++) {
       int predecessor = i - 1;
       while (ra.get(predecessor).endsWith(pathSeprator)) {
@@ -262,8 +263,8 @@ public final class RoutingPathResolver {
       String beanPackage = beansIter.next().getClass().getPackage().getName();
       boolean isKeep = false;
       for (String packageName : basePackages) {
-        if (packageName.equals(beanPackage)
-            || packageName.startsWith(beanPackage + ".")) {
+        if (beanPackage.equals(packageName)
+            || beanPackage.startsWith(packageName + ".")) {
           isKeep = true;
         }
       }

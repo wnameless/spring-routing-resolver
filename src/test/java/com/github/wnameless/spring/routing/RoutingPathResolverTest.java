@@ -35,8 +35,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.github.wnameless.spring.Application;
-import com.github.wnameless.spring.controller2.TestMethodAnno;
-import com.github.wnameless.spring.controller2.TestTypeAnno;
+import com.github.wnameless.spring.controller2.ctrl.TestMethodAnno;
+import com.github.wnameless.spring.controller2.ctrl.TestTypeAnno;
 
 import net.sf.rubycollect4j.block.TransformBlock;
 import nl.jqno.equalsverifier.EqualsVerifier;

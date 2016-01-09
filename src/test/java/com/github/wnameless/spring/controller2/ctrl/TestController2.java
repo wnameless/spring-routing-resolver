@@ -15,13 +15,27 @@
  * the License.
  *
  */
-package com.github.wnameless.spring.controller2;
+package com.github.wnameless.spring.controller2.ctrl;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface TestMethodAnno {}
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@TestTypeAnno
+@RestController
+@RequestMapping(value = "/b")
+public class TestController2 {
+
+  @RequestMapping(value = "/a", method = POST)
+  String home() {
+    return "home";
+  }
+
+  @TestMethodAnno
+  @RequestMapping
+  String home2() {
+    return "home2";
+  }
+
+}

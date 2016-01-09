@@ -15,7 +15,7 @@
  * the License.
  *
  */
-package com.github.wnameless.spring.controller2;
+package com.github.wnameless.spring.controller2.ctrl;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
