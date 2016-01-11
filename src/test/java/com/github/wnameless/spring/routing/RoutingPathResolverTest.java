@@ -73,7 +73,7 @@ public class RoutingPathResolverTest {
     EqualsVerifier.forClass(RoutingPath.class).verify();
     assertTrue(pathRes.getRoutingPaths().get(0).toString()
         .startsWith("RoutingPath{method=GET, " + "rawPath=/home/index, "
-            + "regexPath=/home/index, " + "path=/home/index, "
+            + "path=/home/index, " + "regexPath=/home/index, "
             + "classAnnotations=[@"));
   }
 
@@ -99,7 +99,7 @@ public class RoutingPathResolverTest {
 
           @Override
           public String yield(RoutingPath item) {
-            return item.getRegexPath();
+            return item.getRegexPath().pattern();
           }
 
         }).sort(), ra("/home/index", "/home/index/[^/]+", "/home/index/haha",
@@ -181,7 +181,7 @@ public class RoutingPathResolverTest {
         rp.getRawPath());
     assertEquals("/ant/haha/yoyo/{aaa}/**/*/a+b-c?.json", rp.getPath());
     assertEquals("/ant/haha/yoyo/[^/]+/.*/[^/]*/a\\+b\\-c.\\.json",
-        rp.getRegexPath());
+        rp.getRegexPath().pattern());
   }
 
 }

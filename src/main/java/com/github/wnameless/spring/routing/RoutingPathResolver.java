@@ -47,6 +47,13 @@ import com.github.wnameless.regex.Regexs;
 import net.sf.rubycollect4j.RubyArray;
 import net.sf.rubycollect4j.block.BooleanBlock;
 
+/**
+ * 
+ * {@link RoutingPathResolver} searches all Spring annotated routing paths under
+ * given package bases which are provided by {@link RequestMapping} annotations
+ * into a list of {@link RoutingPath} objects.
+ *
+ */
 public final class RoutingPathResolver {
 
   private static final Pattern PLACEHOLDER = Pattern.compile("\\$\\{[^}]+\\}");
@@ -58,6 +65,16 @@ public final class RoutingPathResolver {
   private Environment env;
   private Set<RoutingPath> routingPaths = newLinkedHashSet();
 
+  /**
+   * Creates a {@link RoutingPathResolver}.
+   * 
+   * @param appCtx
+   *          the Spring {@link ApplicationContext}
+   * @param env
+   *          the Spring {@link Environment}
+   * @param basePackages
+   *          packages to be searched
+   */
   public RoutingPathResolver(ApplicationContext appCtx, Environment env,
       String... basePackages) {
     this.env = checkNotNull(env);
@@ -78,17 +95,30 @@ public final class RoutingPathResolver {
           String path = computePath(rawPath);
           String regexPath = computeRegexPath(path);
           routingPaths.add(new RoutingPath(rawPathAndMethod.getValue(), rawPath,
-              regexPath, path, bean.getClass().getAnnotations(),
-              method.getAnnotations()));
+              path, Pattern.compile(regexPath),
+              bean.getClass().getAnnotations(), method.getAnnotations()));
         }
       }
     }
   }
 
+  /**
+   * Returns a list of {@link RoutingPath} under given package bases.
+   * 
+   * @return a list of {@link RoutingPath}
+   */
   public List<RoutingPath> getRoutingPaths() {
     return newArrayList(routingPaths);
   }
 
+  /**
+   * Finds {@link RoutingPath}s by given annotation which may show on class or
+   * method level of a {@link RequestMapping}.
+   * 
+   * @param annoType
+   *          the class of an annotation
+   * @return founded {@link RoutingPath}
+   */
   public List<RoutingPath> findByAnnotationType(
       final Class<? extends Annotation> annoType) {
     return ra(routingPaths).keepIf(new BooleanBlock<RoutingPath>() {
@@ -117,6 +147,14 @@ public final class RoutingPathResolver {
     }).toA();
   }
 
+  /**
+   * Finds {@link RoutingPath}s by given annotation which only show on class
+   * level of a {@link RequestMapping}.
+   * 
+   * @param annoType
+   *          the class of an annotation
+   * @return founded {@link RoutingPath}
+   */
   public List<RoutingPath> findByClassAnnotationType(
       final Class<? extends Annotation> annoType) {
     return ra(routingPaths).keepIf(new BooleanBlock<RoutingPath>() {
@@ -137,6 +175,14 @@ public final class RoutingPathResolver {
     }).toA();
   }
 
+  /**
+   * Finds {@link RoutingPath}s by given annotation which only show on method
+   * level of a {@link RequestMapping}.
+   * 
+   * @param annoType
+   *          the class of an annotation
+   * @return founded {@link RoutingPath}
+   */
   public List<RoutingPath> findByMethodAnnotationType(
       final Class<? extends Annotation> annoType) {
     return ra(routingPaths).keepIf(new BooleanBlock<RoutingPath>() {
@@ -157,6 +203,13 @@ public final class RoutingPathResolver {
     }).toA();
   }
 
+  /**
+   * Finds {@link RoutingPath}s by given path and request method.
+   * 
+   * @param annoType
+   *          the class of an annotation
+   * @return founded {@link RoutingPath}
+   */
   public RoutingPath findByRequestPathAndMethod(String requestPath,
       RequestMethod method) {
     for (RoutingPath routingPath : routingPaths) {
@@ -166,7 +219,7 @@ public final class RoutingPathResolver {
     }
 
     for (RoutingPath routingPath : routingPaths) {
-      if (requestPath.matches(routingPath.getRegexPath())
+      if (requestPath.matches(routingPath.getRegexPath().pattern())
           && routingPath.getMethod().equals(method))
         return routingPath;
     }
@@ -174,13 +227,20 @@ public final class RoutingPathResolver {
     return null;
   }
 
+  /**
+   * Finds {@link RoutingPath}s by given path.
+   * 
+   * @param annoType
+   *          the class of an annotation
+   * @return founded {@link RoutingPath}
+   */
   public List<RoutingPath> findByRequestPath(String requestPath) {
     List<RoutingPath> paths = newArrayList();
 
     for (RoutingPath routingPath : routingPaths) {
       if (routingPath.getPath().equals(requestPath)) {
         paths.add(routingPath);
-      } else if (requestPath.matches(routingPath.getRegexPath())) {
+      } else if (requestPath.matches(routingPath.getRegexPath().pattern())) {
         paths.add(routingPath);
       }
     }

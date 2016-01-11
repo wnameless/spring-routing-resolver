@@ -23,23 +23,49 @@ import static java.util.Collections.unmodifiableList;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
+import java.util.regex.Pattern;
 
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
+/**
+ * 
+ * {@link RoutingPath} represents the detail information of a Spring annotated
+ * routing path which is provided by the spring {@link RequestMapping}
+ * annotation. It is an immutable class.
+ *
+ */
 public final class RoutingPath {
 
   private final RequestMethod method;
   private final String rawPath;
-  private final String regexPath;
   private final String path;
+  private final Pattern regexPath;
   private final List<Annotation> classAnnotations;
   private final List<Annotation> methodAnnotations;
 
-  public RoutingPath(RequestMethod method, String rawPath, String regexPath,
-      String path, Annotation[] classAnnotations,
+  /**
+   * Creates an {@link RoutingPath}.
+   * 
+   * @param method
+   *          an allowable {@link RequestMethod}
+   * @param rawPath
+   *          the raw path value from the original {@link RequestMapping}
+   * @param path
+   *          the path which all place holders are replaced by Spring
+   *          environment variables
+   * @param regexPath
+   *          the {@link Pattern} used to match valid HTTP requests
+   * @param classAnnotations
+   *          all class annotations of the original {@link RequestMapping}
+   * @param methodAnnotations
+   *          all method annotations of the original {@link RequestMapping}
+   */
+  public RoutingPath(RequestMethod method, String rawPath, String path,
+      Pattern regexPath, Annotation[] classAnnotations,
       Annotation[] methodAnnotations) {
     this.method = checkNotNull(method);
     this.rawPath = checkNotNull(rawPath);
@@ -49,26 +75,56 @@ public final class RoutingPath {
     this.methodAnnotations = newArrayList(methodAnnotations);
   }
 
+  /**
+   * Returns the {@link RequestMethod} of this mapping.
+   * 
+   * @return a {@link RequestMethod}
+   */
   public RequestMethod getMethod() {
     return method;
   }
 
+  /**
+   * Returns the raw path of this mapping.
+   * 
+   * @return a raw path
+   */
   public String getRawPath() {
     return rawPath;
   }
 
-  public String getRegexPath() {
-    return regexPath;
-  }
-
+  /**
+   * Returns the path of this mapping.
+   * 
+   * @return a path
+   */
   public String getPath() {
     return path;
   }
 
+  /**
+   * Returns the regex path of this mapping.
+   * 
+   * @return a {@link Pattern} of the regex path
+   */
+  public Pattern getRegexPath() {
+    return regexPath;
+  }
+
+  /**
+   * Returns all class annotations of the original {@link RequestMapping}.
+   * 
+   * @return all class annotations
+   */
   public List<Annotation> getClassAnnotations() {
     return unmodifiableList(classAnnotations);
   }
 
+  /**
+   * Returns all method annotations of the original {@link RequestMapping}.
+   * 
+   * @return all method annotations
+   */
   public List<Annotation> getMethodAnnotations() {
     return unmodifiableList(methodAnnotations);
   }
@@ -80,22 +136,22 @@ public final class RoutingPath {
     RoutingPath castOther = (RoutingPath) other;
     return Objects.equal(method, castOther.method)
         && Objects.equal(rawPath, castOther.rawPath)
-        && Objects.equal(regexPath, castOther.regexPath)
         && Objects.equal(path, castOther.path)
+        && Objects.equal(regexPath, castOther.regexPath)
         && Objects.equal(classAnnotations, castOther.classAnnotations)
         && Objects.equal(methodAnnotations, castOther.methodAnnotations);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(method, rawPath, regexPath, path, classAnnotations,
+    return Objects.hashCode(method, rawPath, path, regexPath, classAnnotations,
         methodAnnotations);
   }
 
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this).add("method", method)
-        .add("rawPath", rawPath).add("regexPath", regexPath).add("path", path)
+        .add("rawPath", rawPath).add("path", path).add("regexPath", regexPath)
         .add("classAnnotations", classAnnotations)
         .add("methodAnnotations", methodAnnotations).toString();
   }

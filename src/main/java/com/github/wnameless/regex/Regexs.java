@@ -26,11 +26,28 @@ import java.util.regex.Pattern;
 
 import net.sf.rubycollect4j.block.TransformBlock;
 
+/**
+ * 
+ * {@link Regexs} provides some useful methods for regular expression.
+ *
+ */
 public final class Regexs {
 
+  /**
+   * The pattern of all special characters in regular expression.
+   */
   public static final Pattern REGEX_SP_CH =
       Pattern.compile("[\\\\\\[\\.\\[\\]\\{\\}\\(\\)\\*\\+\\-\\?\\^\\$\\]\\|]");
 
+  /**
+   * Returns a string with all regular expression special characters escaped.
+   * 
+   * @param input
+   *          any string
+   * @param excludedPatterns
+   *          special characters in those excluded patterns are ignored
+   * @return a string with all regular expression special characters escaped
+   */
   public static String escapeSpecialCharacters(String input,
       Pattern... excludedPatterns) {
     List<Matcher> matchers = patterns2Matchers(excludedPatterns, input);
@@ -56,11 +73,6 @@ public final class Regexs {
           if (m.find()) advancing = true;
         }
         try {
-          System.out.println(m.pattern());
-          System.out.println(m.start());
-          System.out.println(m.end() - 1);
-          System.out.println("idx :" + chIdx);
-          System.out.println(!range(m.start(), m.end() - 1).coverʔ(chIdx));
           if (range(m.start(), m.end() - 1).coverʔ(chIdx)) return false;
         } catch (IllegalStateException e) {}
       }
