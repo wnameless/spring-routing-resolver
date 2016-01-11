@@ -206,8 +206,10 @@ public final class RoutingPathResolver {
   /**
    * Finds {@link RoutingPath}s by given path and request method.
    * 
-   * @param annoType
-   *          the class of an annotation
+   * @param requestPath
+   *          to be found
+   * @param method
+   *          to be matched
    * @return founded {@link RoutingPath}
    */
   public RoutingPath findByRequestPathAndMethod(String requestPath,
@@ -230,8 +232,8 @@ public final class RoutingPathResolver {
   /**
    * Finds {@link RoutingPath}s by given path.
    * 
-   * @param annoType
-   *          the class of an annotation
+   * @param requestPath
+   *          to be found
    * @return founded {@link RoutingPath}
    */
   public List<RoutingPath> findByRequestPath(String requestPath) {
