@@ -62,8 +62,8 @@ public final class RoutingPathResolver {
   private static final Pattern ANT_A = Pattern.compile("\\*");
   private static final Pattern ANT_Q = Pattern.compile("\\?");
 
-  private Environment env;
-  private Set<RoutingPath> routingPaths = newLinkedHashSet();
+  private final Environment env;
+  private final Set<RoutingPath> routingPaths = newLinkedHashSet();
 
   /**
    * Creates a {@link RoutingPathResolver}.
@@ -215,7 +215,7 @@ public final class RoutingPathResolver {
   public RoutingPath findByRequestPathAndMethod(String requestPath,
       RequestMethod method) {
     for (RoutingPath routingPath : routingPaths) {
-      if (routingPath.getPath().equals(requestPath)
+      if (routingPath.getRegexPath().equals(requestPath)
           && routingPath.getMethod().equals(method))
         return routingPath;
     }
