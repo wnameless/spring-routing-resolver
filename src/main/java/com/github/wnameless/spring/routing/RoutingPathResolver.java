@@ -42,6 +42,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.wnameless.regex.Regexs;
+
 import net.sf.rubycollect4j.RubyArray;
 import net.sf.rubycollect4j.block.BooleanBlock;
 
@@ -49,9 +51,9 @@ public final class RoutingPathResolver {
 
   private static final Pattern PLACEHOLDER = Pattern.compile("\\$\\{[^}]+\\}");
   private static final Pattern PATH_VAR = Pattern.compile("\\{[^}]+\\}");
-  private static final Pattern ANT_AA = Pattern.compile(Pattern.quote("**"));
-  private static final Pattern ANT_A = Pattern.compile(Pattern.quote("*"));
-  private static final Pattern ANT_Q = Pattern.compile(Pattern.quote("?"));
+  private static final Pattern ANT_AA = Pattern.compile("\\*\\*");
+  private static final Pattern ANT_A = Pattern.compile("\\*");
+  private static final Pattern ANT_Q = Pattern.compile("\\?");
 
   private Environment env;
   private Set<RoutingPath> routingPaths = newLinkedHashSet();
@@ -216,7 +218,8 @@ public final class RoutingPathResolver {
   }
 
   private String computeRegexPath(String path) {
-    path = path.replaceAll("([\\.\\+\\-])", "\\\\$1");
+    path = Regexs.escapeSpecialCharacters(path, PLACEHOLDER, PATH_VAR, ANT_AA,
+        ANT_A, ANT_Q);
     Matcher m = PATH_VAR.matcher(path);
     while (m.find()) {
       String match = m.group();
