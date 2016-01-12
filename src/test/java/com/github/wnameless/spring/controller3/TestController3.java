@@ -17,7 +17,6 @@
  */
 package com.github.wnameless.spring.controller3;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,11 +30,6 @@ public class TestController3 {
       method = POST)
   String ant() {
     return "ant";
-  }
-
-  @RequestMapping(value = "hello/", method = GET)
-  String hello() {
-    return "hello";
   }
 
 }

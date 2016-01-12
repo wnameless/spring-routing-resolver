@@ -176,14 +176,12 @@ public class RoutingPathResolverTest {
   @Test
   public void testAntPattern() {
     RoutingPath rp = pathRes3.getRoutingPaths().get(0);
-    assertEquals(2, pathRes3.getRoutingPaths().size());
+    assertEquals(1, pathRes3.getRoutingPaths().size());
     assertEquals("/ant/${test.var.1}/${test.var.3}/{aaa}/**/*/a+b-c?.json",
         rp.getRawPath());
     assertEquals("/ant/haha/yoyo/{aaa}/**/*/a+b-c?.json", rp.getPath());
     assertEquals("/?ant/haha/yoyo/[^/]+/.*/[^/]*/a\\+b\\-c.\\.json/?",
         rp.getRegexPath().pattern());
-    rp = pathRes3.getRoutingPaths().get(1);
-    assertEquals("/?hello/", rp.getRegexPath().pattern());
   }
 
 }
