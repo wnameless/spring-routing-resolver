@@ -20,7 +20,6 @@ package com.github.wnameless.spring.routing;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newLinkedHashSet;
 import static net.sf.rubycollect4j.RubyCollections.hp;
-import static net.sf.rubycollect4j.RubyCollections.newRubyArray;
 import static net.sf.rubycollect4j.RubyCollections.ra;
 
 import java.lang.annotation.Annotation;
@@ -263,11 +262,13 @@ public final class RoutingPathResolver {
         String lowPath = lowPaths.shift();
         if (methodRM.method().length == 0) {
           for (RequestMethod m : RequestMethod.values()) {
-            rawPathsAndMethods.add(hp(joinPaths(topPath, lowPath), m));
+            rawPathsAndMethods
+                .add(hp(PathUtils.joinPaths(topPath, lowPath), m));
           }
         } else {
           for (RequestMethod m : methodRM.method()) {
-            rawPathsAndMethods.add(hp(joinPaths(topPath, lowPath), m));
+            rawPathsAndMethods
+                .add(hp(PathUtils.joinPaths(topPath, lowPath), m));
           }
         }
       }
@@ -324,25 +325,6 @@ public final class RoutingPathResolver {
           env.getProperty(key, deFault));
     }
     return path;
-  }
-
-  private String joinPaths(String... paths) {
-    String pathSeprator = "/";
-
-    RubyArray<String> ra = newRubyArray(paths);
-    ra.delete("");
-    for (int i = 1; i < ra.size(); i++) {
-      int predecessor = i - 1;
-      while (ra.get(predecessor).endsWith(pathSeprator)) {
-        ra.set(predecessor,
-            ra.get(predecessor).substring(0, ra.get(predecessor).length() - 1));
-      }
-      while (ra.get(i).startsWith(pathSeprator)) {
-        ra.set(i, ra.get(i).substring(1));
-      }
-      ra.set(i, pathSeprator + ra.get(i));
-    }
-    return ra.join();
   }
 
   private void retainBeansByPackageNames(Map<String, Object> beans,
