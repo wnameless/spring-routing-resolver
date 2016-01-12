@@ -60,11 +60,11 @@ public class RoutingPathResolverTest {
 
   @Before
   public void setUp() {
-    pathRes = new RoutingPathResolver(appCtx, env,
+    pathRes = new RoutingPathResolver(appCtx,
         "com.github.wnameless.spring.controller");
-    pathRes2 = new RoutingPathResolver(appCtx, env,
+    pathRes2 = new RoutingPathResolver(appCtx,
         "com.github.wnameless.spring.controller2");
-    pathRes3 = new RoutingPathResolver(appCtx, env,
+    pathRes3 = new RoutingPathResolver(appCtx,
         "com.github.wnameless.spring.controller3");
   }
 

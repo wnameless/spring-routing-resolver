@@ -17,7 +17,6 @@
  */
 package com.github.wnameless.spring.routing;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newLinkedHashSet;
 import static net.sf.rubycollect4j.RubyCollections.hp;
@@ -70,14 +69,12 @@ public final class RoutingPathResolver {
    * 
    * @param appCtx
    *          the Spring {@link ApplicationContext}
-   * @param env
-   *          the Spring {@link Environment}
    * @param basePackages
    *          packages to be searched
    */
-  public RoutingPathResolver(ApplicationContext appCtx, Environment env,
+  public RoutingPathResolver(ApplicationContext appCtx,
       String... basePackages) {
-    this.env = checkNotNull(env);
+    env = appCtx.getEnvironment();
     Map<String, Object> beans = appCtx.getBeansWithAnnotation(Controller.class);
     beans.putAll(appCtx.getBeansWithAnnotation(RestController.class));
     retainBeansByPackageNames(beans, basePackages);

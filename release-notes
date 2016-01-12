@@ -4,3 +4,6 @@ Version 0.1.0
 Verison 0.2.0
 * Fix sub package checking bug
 + Support Ant pattern
+
+Version 0.3.0
+* Remove Environment argument in RoutingPathResolver constructor

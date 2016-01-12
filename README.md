@@ -1,3 +1,5 @@
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.wnameless.spring/spring-routing-resolver/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.wnameless.spring/spring-routing-resolver)
+
 spring-routing-resolver
 =============
 An easy way to find out all routing paths in Spring annotated controllers.
@@ -7,19 +9,16 @@ An easy way to find out all routing paths in Spring annotated controllers.
 <dependency>
 	<groupId>com.github.wnameless.spring</groupId>
 	<artifactId>spring-routing-resolver</artifactId>
-	<version>0.2.0</version>
+	<version>0.3.0</version>
 </dependency>
 ```
 
 #Quick Start
 ```java
 @Autowired
-Environment env;
-
-@Autowired
 ApplicationContext appCtx;
 
-RoutingPathResolver pathRes = new RoutingPathResolver(appCtx, env, "com.example.controller");
+RoutingPathResolver pathRes = new RoutingPathResolver(appCtx, "com.example.controller");
 ```
 A Spring annotated controller
 ```java
