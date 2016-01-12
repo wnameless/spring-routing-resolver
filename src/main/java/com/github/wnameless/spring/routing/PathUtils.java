@@ -28,6 +28,8 @@ import net.sf.rubycollect4j.RubyArray;
  */
 public final class PathUtils {
 
+  private PathUtils() {}
+
   /**
    * Creates a joined path by given paths; a slash('/') is used as the
    * separator.

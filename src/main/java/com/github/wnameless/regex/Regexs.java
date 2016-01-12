@@ -33,6 +33,8 @@ import net.sf.rubycollect4j.block.TransformBlock;
  */
 public final class Regexs {
 
+  private Regexs() {}
+
   /**
    * The pattern of all special characters in regular expression.
    */
