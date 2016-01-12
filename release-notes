@@ -8,3 +8,5 @@ Verison 0.2.0
 Version 0.3.0
 * Remove Environment argument in RoutingPathResolver constructor
 * Fix the bug of findByRequestPathAndMethod
++ RegexPath now can accept the first slash of an URL as optional
++ RegexPath now can accept the last slash of an URL as optional if user not mentions

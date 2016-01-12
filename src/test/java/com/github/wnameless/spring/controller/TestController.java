@@ -29,7 +29,7 @@ import com.github.wnameless.spring.controller2.ctrl.TestTypeAnno;
 @Controller
 public class TestController {
 
-  @RequestMapping(value = { "/index", "/index/{ph1}" }, method = GET)
+  @RequestMapping(value = { "/index", "/index/{ph1}/" }, method = GET)
   String home() {
     return "home";
   }

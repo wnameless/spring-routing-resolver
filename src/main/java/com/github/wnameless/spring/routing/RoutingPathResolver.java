@@ -300,6 +300,12 @@ public final class RoutingPathResolver {
       path = path.replaceFirst(Pattern.quote(match), ".");
     }
     path = path.replaceAll(Pattern.quote("\""), "*");
+
+    // the first slash of an URL can be omitted
+    path = path.startsWith("/") ? path = "/?" + path.substring(1) : "/?" + path;
+    // the last slash of an URL is optional if user not mentions
+    if (!path.endsWith("/")) path = path + "/?";
+
     return path;
   }
 

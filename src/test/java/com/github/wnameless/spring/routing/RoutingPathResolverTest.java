@@ -73,7 +73,7 @@ public class RoutingPathResolverTest {
     EqualsVerifier.forClass(RoutingPath.class).verify();
     assertTrue(pathRes.getRoutingPaths().get(0).toString()
         .startsWith("RoutingPath{method=GET, " + "rawPath=/home/index, "
-            + "path=/home/index, " + "regexPath=/home/index, "
+            + "path=/home/index, " + "regexPath=/?home/index/?, "
             + "classAnnotations=[@"));
   }
 
@@ -88,7 +88,7 @@ public class RoutingPathResolverTest {
           }
 
         }).sort(),
-        ra("/home/index", "/home/index/{ph1}", "/home/index/${test.var.1}",
+        ra("/home/index", "/home/index/{ph1}/", "/home/index/${test.var.1}",
             "/home/index/${test.var.2:yaya}").sort());
   }
 
@@ -102,8 +102,8 @@ public class RoutingPathResolverTest {
             return item.getRegexPath().pattern();
           }
 
-        }).sort(), ra("/home/index", "/home/index/[^/]+", "/home/index/haha",
-            "/home/index/yaya").sort());
+        }).sort(), ra("/?home/index/?", "/?home/index/[^/]+/",
+            "/?home/index/haha/?", "/?home/index/yaya/?").sort());
   }
 
   @Test
@@ -116,7 +116,7 @@ public class RoutingPathResolverTest {
             return item.getPath();
           }
 
-        }).sort(), ra("/home/index", "/home/index/{ph1}", "/home/index/haha",
+        }).sort(), ra("/home/index", "/home/index/{ph1}/", "/home/index/haha",
             "/home/index/yaya").sort());
   }
 
@@ -162,9 +162,9 @@ public class RoutingPathResolverTest {
         pathRes
             .findByRequestPathAndMethod("/home/index/yaya", RequestMethod.GET)
             .getRawPath());
-    assertEquals("/home/index/{ph1}",
+    assertEquals("/home/index/{ph1}/",
         pathRes
-            .findByRequestPathAndMethod("/home/index/gogo", RequestMethod.GET)
+            .findByRequestPathAndMethod("/home/index/gogo/", RequestMethod.GET)
             .getRawPath());
   }
 
@@ -176,12 +176,14 @@ public class RoutingPathResolverTest {
   @Test
   public void testAntPattern() {
     RoutingPath rp = pathRes3.getRoutingPaths().get(0);
-    assertEquals(1, pathRes3.getRoutingPaths().size());
+    assertEquals(2, pathRes3.getRoutingPaths().size());
     assertEquals("/ant/${test.var.1}/${test.var.3}/{aaa}/**/*/a+b-c?.json",
         rp.getRawPath());
     assertEquals("/ant/haha/yoyo/{aaa}/**/*/a+b-c?.json", rp.getPath());
-    assertEquals("/ant/haha/yoyo/[^/]+/.*/[^/]*/a\\+b\\-c.\\.json",
+    assertEquals("/?ant/haha/yoyo/[^/]+/.*/[^/]*/a\\+b\\-c.\\.json/?",
         rp.getRegexPath().pattern());
+    rp = pathRes3.getRoutingPaths().get(1);
+    assertEquals("/?hello/", rp.getRegexPath().pattern());
   }
 
 }
