@@ -212,7 +212,7 @@ public final class RoutingPathResolver {
   public RoutingPath findByRequestPathAndMethod(String requestPath,
       RequestMethod method) {
     for (RoutingPath routingPath : routingPaths) {
-      if (routingPath.getRegexPath().equals(requestPath)
+      if (routingPath.getPath().equals(requestPath)
           && routingPath.getMethod().equals(method))
         return routingPath;
     }

@@ -7,3 +7,4 @@ Verison 0.2.0
 
 Version 0.3.0
 * Remove Environment argument in RoutingPathResolver constructor
+* Fix the bug of findByRequestPathAndMethod
