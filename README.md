@@ -49,7 +49,7 @@ System.out.println(rp.getRawPath());
 System.out.println(rp.getPath());
 // /b/a/foo/**/*.json
 System.out.println(rp.getRegexPath());
-// /b/a/foo/.*/[^/]*\.json
+// /?b/a/foo/.*/[^/]*\.json/?
 System.out.println(rp.getClassAnnotations());
 // [@com.example.annotation.TestTypeAnno(),...]
 System.out.println(rp.getMethodAnnotations());
