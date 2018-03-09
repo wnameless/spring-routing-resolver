@@ -155,6 +155,9 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<executable>gpg</executable>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
