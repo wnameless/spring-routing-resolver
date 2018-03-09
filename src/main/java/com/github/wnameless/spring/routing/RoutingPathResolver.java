@@ -23,6 +23,7 @@ import static com.google.common.collect.Sets.newLinkedHashSet;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,11 @@ import java.util.regex.Pattern;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -73,19 +79,57 @@ public final class RoutingPathResolver {
   public RoutingPathResolver(ApplicationContext appCtx,
       String... basePackages) {
     env = appCtx.getEnvironment();
+
     Map<String, Object> beans = appCtx.getBeansWithAnnotation(Controller.class);
     beans.putAll(appCtx.getBeansWithAnnotation(RestController.class));
     retainBeansByPackageNames(beans, basePackages);
 
     for (Object bean : beans.values()) {
+      RequestMapping classMapping =
+          bean.getClass().getAnnotation(RequestMapping.class);
+
       List<Method> mappingMethods =
           getMethodsListWithAnnotation(bean.getClass(), RequestMapping.class);
-      RequestMapping classRM =
-          bean.getClass().getAnnotation(RequestMapping.class);
+      mappingMethods.addAll(
+          getMethodsListWithAnnotation(bean.getClass(), GetMapping.class));
+      mappingMethods.addAll(
+          getMethodsListWithAnnotation(bean.getClass(), PostMapping.class));
+      mappingMethods.addAll(
+          getMethodsListWithAnnotation(bean.getClass(), DeleteMapping.class));
+      mappingMethods.addAll(
+          getMethodsListWithAnnotation(bean.getClass(), PutMapping.class));
+      mappingMethods.addAll(
+          getMethodsListWithAnnotation(bean.getClass(), PatchMapping.class));
+
       for (Method method : mappingMethods) {
-        RequestMapping methodRM = method.getAnnotation(RequestMapping.class);
+        Annotation methodMapping = method.getAnnotation(RequestMapping.class);
+        if (methodMapping == null)
+          methodMapping = method.getAnnotation(GetMapping.class);
+        if (methodMapping == null)
+          methodMapping = method.getAnnotation(PostMapping.class);
+        if (methodMapping == null)
+          methodMapping = method.getAnnotation(DeleteMapping.class);
+        if (methodMapping == null)
+          methodMapping = method.getAnnotation(PutMapping.class);
+        if (methodMapping == null)
+          methodMapping = method.getAnnotation(PatchMapping.class);
+
+        if (methodMapping.annotationType().equals(RequestMapping.class)) {
+
+        } else if (methodMapping.annotationType().equals(GetMapping.class)) {
+
+        } else if (methodMapping.annotationType().equals(PostMapping.class)) {
+
+        } else if (methodMapping.annotationType().equals(DeleteMapping.class)) {
+
+        } else if (methodMapping.annotationType().equals(PutMapping.class)) {
+
+        } else if (methodMapping.annotationType().equals(PatchMapping.class)) {
+
+        }
+
         for (Entry<String, RequestMethod> rawPathAndMethod : computeRawPaths(
-            classRM, methodRM)) {
+            classMapping, methodMapping)) {
           String rawPath = rawPathAndMethod.getKey();
           String path = computePath(rawPath);
           String regexPath = computeRegexPath(path);
@@ -258,28 +302,84 @@ public final class RoutingPathResolver {
   }
 
   private List<Entry<String, RequestMethod>> computeRawPaths(
-      RequestMapping classRM, RequestMapping methodRM) {
+      RequestMapping classMapping, Annotation methodMapping) {
     List<Entry<String, RequestMethod>> rawPathsAndMethods = newArrayList();
 
-    List<String> topPaths = classRM == null ? newArrayList("")
-        : newArrayList(ImmutableSet.copyOf(classRM.value()));
-    List<String> lowPaths = newArrayList(ImmutableSet.copyOf(methodRM.value()));
-    if (topPaths.isEmpty()) topPaths.add("");
-    if (lowPaths.isEmpty()) lowPaths.add("");
+    List<String> prefixPaths = classMapping == null ? newArrayList("")
+        : classMapping.value().length != 0
+            ? newArrayList(ImmutableSet.copyOf(classMapping.value()))
+            : newArrayList(ImmutableSet.copyOf(classMapping.path()));
+    if (prefixPaths.isEmpty()) prefixPaths.add("");
 
-    while (!topPaths.isEmpty()) {
-      String topPath = topPaths.remove(0);
-      while (!lowPaths.isEmpty()) {
-        String lowPath = lowPaths.remove(0);
-        if (methodRM.method().length == 0) {
+    List<String> suffixPaths = newArrayList();
+    List<RequestMethod> requestMethods = newArrayList();
+    if (methodMapping.annotationType().equals(RequestMapping.class)) {
+      suffixPaths = ((RequestMapping) methodMapping).value().length != 0
+          ? newArrayList(
+              ImmutableSet.copyOf(((RequestMapping) methodMapping).value()))
+          : newArrayList(
+              ImmutableSet.copyOf(((RequestMapping) methodMapping).path()));
+
+      requestMethods
+          .addAll(Arrays.asList(((RequestMapping) methodMapping).method()));
+    } else if (methodMapping.annotationType().equals(GetMapping.class)) {
+      suffixPaths = ((GetMapping) methodMapping).value().length != 0
+          ? newArrayList(
+              ImmutableSet.copyOf(((GetMapping) methodMapping).value()))
+          : newArrayList(
+              ImmutableSet.copyOf(((GetMapping) methodMapping).path()));
+
+      requestMethods.add(RequestMethod.GET);
+    } else if (methodMapping.annotationType().equals(PostMapping.class)) {
+      suffixPaths = ((PostMapping) methodMapping).value().length != 0
+          ? newArrayList(
+              ImmutableSet.copyOf(((PostMapping) methodMapping).value()))
+          : newArrayList(
+              ImmutableSet.copyOf(((PostMapping) methodMapping).path()));
+
+      requestMethods.add(RequestMethod.POST);
+    } else if (methodMapping.annotationType().equals(DeleteMapping.class)) {
+      suffixPaths = ((DeleteMapping) methodMapping).value().length != 0
+          ? newArrayList(
+              ImmutableSet.copyOf(((DeleteMapping) methodMapping).value()))
+          : newArrayList(
+              ImmutableSet.copyOf(((DeleteMapping) methodMapping).path()));
+
+      requestMethods.add(RequestMethod.DELETE);
+    } else if (methodMapping.annotationType().equals(PutMapping.class)) {
+      suffixPaths = ((PutMapping) methodMapping).value().length != 0
+          ? newArrayList(
+              ImmutableSet.copyOf(((PutMapping) methodMapping).value()))
+          : newArrayList(
+              ImmutableSet.copyOf(((PutMapping) methodMapping).path()));
+
+      requestMethods.add(RequestMethod.PUT);
+    } else if (methodMapping.annotationType().equals(PatchMapping.class)) {
+      suffixPaths = ((PatchMapping) methodMapping).value().length != 0
+          ? newArrayList(
+              ImmutableSet.copyOf(((PatchMapping) methodMapping).value()))
+          : newArrayList(
+              ImmutableSet.copyOf(((PatchMapping) methodMapping).path()));
+
+      requestMethods.add(RequestMethod.PATCH);
+    }
+    if (suffixPaths.isEmpty()) suffixPaths.add("");
+
+    while (!prefixPaths.isEmpty()) {
+      String prefixPath = prefixPaths.remove(0);
+
+      while (!suffixPaths.isEmpty()) {
+        String suffixPath = suffixPaths.remove(0);
+
+        if (requestMethods.isEmpty()) {
           for (RequestMethod m : RequestMethod.values()) {
-            rawPathsAndMethods.add(
-                Maps.immutableEntry(PathUtils.joinPaths(topPath, lowPath), m));
+            rawPathsAndMethods.add(Maps.immutableEntry(
+                PathUtils.joinPaths(prefixPath, suffixPath), m));
           }
         } else {
-          for (RequestMethod m : methodRM.method()) {
-            rawPathsAndMethods.add(
-                Maps.immutableEntry(PathUtils.joinPaths(topPath, lowPath), m));
+          for (RequestMethod m : requestMethods) {
+            rawPathsAndMethods.add(Maps.immutableEntry(
+                PathUtils.joinPaths(prefixPath, suffixPath), m));
           }
         }
       }

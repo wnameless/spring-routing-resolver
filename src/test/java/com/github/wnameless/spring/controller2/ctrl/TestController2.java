@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @TestTypeAnno
 @RestController
-@RequestMapping(value = "/b")
+@RequestMapping(path = "/b")
 public class TestController2 {
 
   @RequestMapping(value = "/a", method = POST)

@@ -20,6 +20,11 @@ package com.github.wnameless.spring.controller;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.github.wnameless.spring.controller2.ctrl.TestTypeAnno;
@@ -29,14 +34,34 @@ import com.github.wnameless.spring.controller2.ctrl.TestTypeAnno;
 @Controller
 public class TestController {
 
-  @RequestMapping(value = { "/index", "/index/{ph1}/" }, method = GET)
+  @RequestMapping(path = { "/index", "/index/{ph1}/" }, method = GET)
   String home() {
     return "home";
   }
 
-  @RequestMapping(value = "/index/${test.var.1}", method = GET)
+  @GetMapping(value = "/index/${test.var.1}")
   String home3() {
     return "home3";
+  }
+
+  @PostMapping(path = "/index/${test.var.1}")
+  String home31() {
+    return "home31";
+  }
+
+  @DeleteMapping(value = "/index/${test.var.1}")
+  String home32() {
+    return "home32";
+  }
+
+  @PutMapping(path = "/index/${test.var.1}")
+  String home33() {
+    return "home33";
+  }
+
+  @PatchMapping(value = "/index/${test.var.1}")
+  String home34() {
+    return "home34";
   }
 
   @RequestMapping(value = "/index/${test.var.2:yaya}", method = GET)

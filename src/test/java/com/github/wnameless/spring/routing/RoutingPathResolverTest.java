@@ -68,13 +68,31 @@ public class RoutingPathResolverTest {
         "com.github.wnameless.spring.controller3");
   }
 
+  @SuppressWarnings("deprecation")
   @Test
   public void testRoutingPathBean() {
+    assertTrue(
+        ra(pathRes.getRoutingPaths()).sortBy("getRawPath").get(0).toString()
+            .startsWith("RoutingPath{method=GET, " + "rawPath=/home/index, "
+                + "path=/home/index, " + "regexPath=/?home/index/?, "
+                + "classAnnotations=[@"));
     EqualsVerifier.forClass(RoutingPath.class).verify();
-    assertTrue(pathRes.getRoutingPaths().get(0).toString()
-        .startsWith("RoutingPath{method=GET, " + "rawPath=/home/index, "
-            + "path=/home/index, " + "regexPath=/?home/index/?, "
-            + "classAnnotations=[@"));
+  }
+
+  @Test
+  public void testPath() {
+    assertEquals(ra(pathRes.getRoutingPaths())
+        .map(new TransformBlock<RoutingPath, String>() {
+
+          @Override
+          public String yield(RoutingPath item) {
+            return item.getPath();
+          }
+
+        }).sort(),
+        ra("/home/index", "/home/index/{ph1}/", "/home/index/haha",
+            "/home/index/haha", "/home/index/haha", "/home/index/haha",
+            "/home/index/haha", "/home/index/yaya").sort());
   }
 
   @Test
@@ -89,6 +107,8 @@ public class RoutingPathResolverTest {
 
         }).sort(),
         ra("/home/index", "/home/index/{ph1}/", "/home/index/${test.var.1}",
+            "/home/index/${test.var.1}", "/home/index/${test.var.1}",
+            "/home/index/${test.var.1}", "/home/index/${test.var.1}",
             "/home/index/${test.var.2:yaya}").sort());
   }
 
@@ -102,22 +122,10 @@ public class RoutingPathResolverTest {
             return item.getRegexPath().pattern();
           }
 
-        }).sort(), ra("/?home/index/?", "/?home/index/[^/]+/",
+        }).sort(),
+        ra("/?home/index/?", "/?home/index/[^/]+/", "/?home/index/haha/?",
+            "/?home/index/haha/?", "/?home/index/haha/?", "/?home/index/haha/?",
             "/?home/index/haha/?", "/?home/index/yaya/?").sort());
-  }
-
-  @Test
-  public void testPath() {
-    assertEquals(ra(pathRes.getRoutingPaths())
-        .map(new TransformBlock<RoutingPath, String>() {
-
-          @Override
-          public String yield(RoutingPath item) {
-            return item.getPath();
-          }
-
-        }).sort(), ra("/home/index", "/home/index/{ph1}/", "/home/index/haha",
-            "/home/index/yaya").sort());
   }
 
   @Test
