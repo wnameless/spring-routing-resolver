@@ -4,7 +4,7 @@ spring-routing-resolver
 =============
 An easy way to find out all routing paths in Spring annotated controllers.
 
-##Maven Repo
+## Maven Repo
 ```xml
 <dependency>
 	<groupId>com.github.wnameless.spring</groupId>
@@ -12,11 +12,12 @@ An easy way to find out all routing paths in Spring annotated controllers.
 	<version>0.4.0</version>
 </dependency>
 ```
-#Important
+# Important
 Since v0.4.0, @GetMapping, @PostMapping, @DeleteMapping, @PutMapping, @PatchMapping are supported.
+
 Before v0.4.0, this library only reads the url inside @RequestMapping(value="/path"), but leaves the url inside @RequestMapping(path="/path") unread, it has been fixed after v0.4.0.
 
-#Quick Start
+# Quick Start
 ```java
 @Autowired
 ApplicationContext appCtx;
