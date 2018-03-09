@@ -19,8 +19,6 @@ package com.github.wnameless.spring.routing;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newLinkedHashSet;
-import static net.sf.rubycollect4j.RubyCollections.hp;
-import static net.sf.rubycollect4j.RubyCollections.ra;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -41,9 +39,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.wnameless.regex.Regexs;
-
-import net.sf.rubycollect4j.RubyArray;
-import net.sf.rubycollect4j.block.BooleanBlock;
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Maps;
 
 /**
  * 
@@ -117,30 +116,34 @@ public final class RoutingPathResolver {
    */
   public List<RoutingPath> findByAnnotationType(
       final Class<? extends Annotation> annoType) {
-    return ra(routingPaths).keepIf(new BooleanBlock<RoutingPath>() {
+    List<RoutingPath> paths = newArrayList(routingPaths);
+
+    Iterables.removeIf(paths, new Predicate<RoutingPath>() {
 
       @Override
-      public boolean yield(RoutingPath item) {
-        return ra(item.getClassAnnotations())
-            .anyʔ(new BooleanBlock<Annotation>() {
+      public boolean apply(RoutingPath item) {
+        return !Iterables.any(item.getClassAnnotations(),
+            new Predicate<Annotation>() {
 
-          @Override
-          public boolean yield(Annotation item) {
-            return annoType.equals(item.annotationType());
-          }
+              @Override
+              public boolean apply(Annotation item) {
+                return annoType.equals(item.annotationType());
+              }
 
-        }) || ra(item.getMethodAnnotations())
-            .anyʔ(new BooleanBlock<Annotation>() {
+            }) && !Iterables.any(item.getMethodAnnotations(),
+                new Predicate<Annotation>() {
 
-          @Override
-          public boolean yield(Annotation item) {
-            return annoType.equals(item.annotationType());
-          }
+                  @Override
+                  public boolean apply(Annotation item) {
+                    return annoType.equals(item.annotationType());
+                  }
 
-        });
+                });
       }
 
-    }).toA();
+    });
+
+    return paths;
   }
 
   /**
@@ -153,22 +156,26 @@ public final class RoutingPathResolver {
    */
   public List<RoutingPath> findByClassAnnotationType(
       final Class<? extends Annotation> annoType) {
-    return ra(routingPaths).keepIf(new BooleanBlock<RoutingPath>() {
+    List<RoutingPath> paths = newArrayList(routingPaths);
+
+    Iterables.removeIf(paths, new Predicate<RoutingPath>() {
 
       @Override
-      public boolean yield(RoutingPath item) {
-        return ra(item.getClassAnnotations())
-            .anyʔ(new BooleanBlock<Annotation>() {
+      public boolean apply(RoutingPath input) {
+        return !Iterables.any(input.getClassAnnotations(),
+            new Predicate<Annotation>() {
 
-          @Override
-          public boolean yield(Annotation item) {
-            return annoType.equals(item.annotationType());
-          }
+              @Override
+              public boolean apply(Annotation input) {
+                return annoType.equals(input.annotationType());
+              }
 
-        });
+            });
       }
 
-    }).toA();
+    });
+
+    return paths;
   }
 
   /**
@@ -181,22 +188,26 @@ public final class RoutingPathResolver {
    */
   public List<RoutingPath> findByMethodAnnotationType(
       final Class<? extends Annotation> annoType) {
-    return ra(routingPaths).keepIf(new BooleanBlock<RoutingPath>() {
+    List<RoutingPath> paths = newArrayList(routingPaths);
+
+    Iterables.removeIf(paths, new Predicate<RoutingPath>() {
 
       @Override
-      public boolean yield(RoutingPath item) {
-        return ra(item.getMethodAnnotations())
-            .anyʔ(new BooleanBlock<Annotation>() {
+      public boolean apply(RoutingPath input) {
+        return !Iterables.any(input.getMethodAnnotations(),
+            new Predicate<Annotation>() {
 
-          @Override
-          public boolean yield(Annotation item) {
-            return annoType.equals(item.annotationType());
-          }
+              @Override
+              public boolean apply(Annotation input) {
+                return annoType.equals(input.annotationType());
+              }
 
-        });
+            });
       }
 
-    }).toA();
+    });
+
+    return paths;
   }
 
   /**
@@ -250,25 +261,25 @@ public final class RoutingPathResolver {
       RequestMapping classRM, RequestMapping methodRM) {
     List<Entry<String, RequestMethod>> rawPathsAndMethods = newArrayList();
 
-    RubyArray<String> topPaths =
-        classRM == null ? ra("") : ra(classRM.value()).uniq();
-    RubyArray<String> lowPaths = ra(methodRM.value()).uniq();
-    if (topPaths.isEmpty()) topPaths.unshift("");
-    if (lowPaths.isEmpty()) lowPaths.unshift("");
+    List<String> topPaths = classRM == null ? newArrayList("")
+        : newArrayList(ImmutableSet.copyOf(classRM.value()));
+    List<String> lowPaths = newArrayList(ImmutableSet.copyOf(methodRM.value()));
+    if (topPaths.isEmpty()) topPaths.add("");
+    if (lowPaths.isEmpty()) lowPaths.add("");
 
-    while (topPaths.anyʔ()) {
-      String topPath = topPaths.shift();
-      while (lowPaths.anyʔ()) {
-        String lowPath = lowPaths.shift();
+    while (!topPaths.isEmpty()) {
+      String topPath = topPaths.remove(0);
+      while (!lowPaths.isEmpty()) {
+        String lowPath = lowPaths.remove(0);
         if (methodRM.method().length == 0) {
           for (RequestMethod m : RequestMethod.values()) {
-            rawPathsAndMethods
-                .add(hp(PathUtils.joinPaths(topPath, lowPath), m));
+            rawPathsAndMethods.add(
+                Maps.immutableEntry(PathUtils.joinPaths(topPath, lowPath), m));
           }
         } else {
           for (RequestMethod m : methodRM.method()) {
-            rawPathsAndMethods
-                .add(hp(PathUtils.joinPaths(topPath, lowPath), m));
+            rawPathsAndMethods.add(
+                Maps.immutableEntry(PathUtils.joinPaths(topPath, lowPath), m));
           }
         }
       }

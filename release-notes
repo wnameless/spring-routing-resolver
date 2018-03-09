@@ -10,3 +10,6 @@ Version 0.3.0
 * Fix the bug of findByRequestPathAndMethod
 + RegexPath now can accept the first slash of an URL as optional
 + RegexPath now can accept the last slash of an URL as optional if user not mentions
+
+Version 0.4.0
+- Remove RubyCollect4J dependency

@@ -17,14 +17,10 @@
  */
 package com.github.wnameless.regex;
 
-import static net.sf.rubycollect4j.RubyCollections.ra;
-import static net.sf.rubycollect4j.RubyCollections.range;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.sf.rubycollect4j.block.TransformBlock;
 
 /**
  * 
@@ -75,7 +71,7 @@ public final class Regexs {
           if (m.find()) advancing = true;
         }
         try {
-          if (range(m.start(), m.end() - 1).coverʔ(chIdx)) return false;
+          if (chIdx >= m.start() && chIdx <= m.end() - 1) return false;
         } catch (IllegalStateException e) {}
       }
     } while (advancing);
@@ -90,14 +86,11 @@ public final class Regexs {
 
   private static List<Matcher> patterns2Matchers(Pattern[] patterns,
       final String input) {
-    return ra(patterns).map(new TransformBlock<Pattern, Matcher>() {
-
-      @Override
-      public Matcher yield(Pattern item) {
-        return item.matcher(input);
-      }
-
-    });
+    List<Matcher> matchers = new ArrayList<Matcher>();
+    for (Pattern p : patterns) {
+      matchers.add(p.matcher(input));
+    }
+    return matchers;
   }
 
 }

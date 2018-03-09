@@ -17,9 +17,10 @@
  */
 package com.github.wnameless.spring.routing;
 
-import static net.sf.rubycollect4j.RubyCollections.newRubyArray;
+import java.util.ArrayList;
+import java.util.Arrays;
 
-import net.sf.rubycollect4j.RubyArray;
+import com.google.common.base.Joiner;
 
 /**
  * 
@@ -54,20 +55,21 @@ public final class PathUtils {
   public static String joinPaths(Character separator, String... paths) {
     String pathSeprator = separator.toString();
 
-    RubyArray<String> ra = newRubyArray(paths);
-    ra.delete("");
-    for (int i = 1; i < ra.size(); i++) {
+    ArrayList<String> pathList = new ArrayList<String>(Arrays.asList(paths));
+    pathList.remove("");
+    for (int i = 1; i < pathList.size(); i++) {
       int predecessor = i - 1;
-      while (ra.get(predecessor).endsWith(pathSeprator)) {
-        ra.set(predecessor,
-            ra.get(predecessor).substring(0, ra.get(predecessor).length() - 1));
+      while (pathList.get(predecessor).endsWith(pathSeprator)) {
+        pathList.set(predecessor, pathList.get(predecessor).substring(0,
+            pathList.get(predecessor).length() - 1));
       }
-      while (ra.get(i).startsWith(pathSeprator)) {
-        ra.set(i, ra.get(i).substring(1));
+      while (pathList.get(i).startsWith(pathSeprator)) {
+        pathList.set(i, pathList.get(i).substring(1));
       }
-      ra.set(i, pathSeprator + ra.get(i));
+      pathList.set(i, pathSeprator + pathList.get(i));
     }
-    return ra.join();
+
+    return Joiner.on("").join(pathList);
   }
 
 }
