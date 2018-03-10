@@ -114,20 +114,6 @@ public final class RoutingPathResolver {
         if (methodMapping == null)
           methodMapping = method.getAnnotation(PatchMapping.class);
 
-        if (methodMapping.annotationType().equals(RequestMapping.class)) {
-
-        } else if (methodMapping.annotationType().equals(GetMapping.class)) {
-
-        } else if (methodMapping.annotationType().equals(PostMapping.class)) {
-
-        } else if (methodMapping.annotationType().equals(DeleteMapping.class)) {
-
-        } else if (methodMapping.annotationType().equals(PutMapping.class)) {
-
-        } else if (methodMapping.annotationType().equals(PatchMapping.class)) {
-
-        }
-
         for (Entry<String, RequestMethod> rawPathAndMethod : computeRawPaths(
             classMapping, methodMapping)) {
           String rawPath = rawPathAndMethod.getKey();
