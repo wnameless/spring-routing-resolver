@@ -119,9 +119,10 @@ public final class RoutingPathResolver {
           String rawPath = rawPathAndMethod.getKey();
           String path = computePath(rawPath);
           String regexPath = computeRegexPath(path);
-          routingPaths.add(new RoutingPath(rawPathAndMethod.getValue(), rawPath,
-              path, Pattern.compile(regexPath),
-              bean.getClass().getAnnotations(), method.getAnnotations()));
+          routingPaths
+              .add(new RoutingPath(rawPathAndMethod.getValue(), rawPath, path,
+                  Pattern.compile(regexPath), bean.getClass().getAnnotations(),
+                  method.getAnnotations(), method.getParameterAnnotations()));
         }
       }
     }

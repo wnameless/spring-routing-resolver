@@ -9,7 +9,7 @@ An easy way to find out all routing paths in Spring annotated controllers.
 <dependency>
 	<groupId>com.github.wnameless.spring</groupId>
 	<artifactId>spring-routing-resolver</artifactId>
-	<version>0.4.0</version>
+	<version>0.5.0</version>
 </dependency>
 ```
 ## Important

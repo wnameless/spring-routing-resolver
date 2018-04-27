@@ -15,3 +15,6 @@ Version 0.4.0
 - Remove RubyCollect4J dependency
 * Fix the bug of reading the path from path() instead of value()
 + Add support for @GetMapping, @PostMapping, @DeleteMapping, @PutMapping, @PatchMapping
+
+Version 0.5.0
++ Add parameter annotations

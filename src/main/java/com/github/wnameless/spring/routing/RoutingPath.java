@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.google.common.collect.ForwardingList;
 
 /**
  * 
@@ -46,6 +47,7 @@ public final class RoutingPath {
   private final Pattern regexPath;
   private final List<Annotation> classAnnotations;
   private final List<Annotation> methodAnnotations;
+  private final List<List<Annotation>> parameterAnnotations = newArrayList();
 
   /**
    * Creates an {@link RoutingPath}.
@@ -66,13 +68,16 @@ public final class RoutingPath {
    */
   public RoutingPath(RequestMethod method, String rawPath, String path,
       Pattern regexPath, Annotation[] classAnnotations,
-      Annotation[] methodAnnotations) {
+      Annotation[] methodAnnotations, Annotation[][] parameterAnnotations) {
     this.method = checkNotNull(method);
     this.rawPath = checkNotNull(rawPath);
     this.regexPath = checkNotNull(regexPath);
     this.path = checkNotNull(path);
     this.classAnnotations = newArrayList(classAnnotations);
     this.methodAnnotations = newArrayList(methodAnnotations);
+    for (Annotation[] annos : parameterAnnotations) {
+      this.parameterAnnotations.add(newArrayList(annos));
+    }
   }
 
   /**
@@ -127,6 +132,29 @@ public final class RoutingPath {
    */
   public List<Annotation> getMethodAnnotations() {
     return unmodifiableList(methodAnnotations);
+  }
+
+  /**
+   * Returns all parameter annotations of the original {@link RequestMapping}.
+   * 
+   * @return all parameter annotations
+   */
+  public List<List<Annotation>> getParameterAnnotations() {
+    return unmodifiableList2(parameterAnnotations);
+  }
+
+  private <T> List<List<T>> unmodifiableList2(final List<List<T>> input) {
+    return unmodifiableList(new ForwardingList<List<T>>() {
+      @Override
+      protected List<List<T>> delegate() {
+        return unmodifiableList(input);
+      }
+
+      @Override
+      public List<T> get(int index) {
+        return unmodifiableList(delegate().get(index));
+      }
+    });
   }
 
   @Override
