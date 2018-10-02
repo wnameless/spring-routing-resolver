@@ -38,7 +38,6 @@ import com.github.wnameless.spring.Application;
 import com.github.wnameless.spring.controller2.ctrl.TestMethodAnno;
 import com.github.wnameless.spring.controller2.ctrl.TestTypeAnno;
 
-import net.sf.rubycollect4j.block.TransformBlock;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -68,28 +67,20 @@ public class RoutingPathResolverTest {
         "com.github.wnameless.spring.controller3");
   }
 
-  @SuppressWarnings("deprecation")
   @Test
   public void testRoutingPathBean() {
-    assertTrue(
-        ra(pathRes.getRoutingPaths()).sortBy("getRawPath").get(0).toString()
-            .startsWith("RoutingPath{method=GET, " + "rawPath=/home/index, "
-                + "path=/home/index, " + "regexPath=/?home/index/?, "
-                + "classAnnotations=[@"));
+    assertTrue(ra(pathRes.getRoutingPaths()).sortBy(RoutingPath::getRawPath)
+        .get(0).toString()
+        .startsWith("RoutingPath{method=GET, " + "rawPath=/home/index, "
+            + "path=/home/index, " + "regexPath=/?home/index/?, "
+            + "classAnnotations=[@"));
     EqualsVerifier.forClass(RoutingPath.class).verify();
   }
 
   @Test
   public void testPath() {
-    assertEquals(ra(pathRes.getRoutingPaths())
-        .map(new TransformBlock<RoutingPath, String>() {
-
-          @Override
-          public String yield(RoutingPath item) {
-            return item.getPath();
-          }
-
-        }).sort(),
+    assertEquals(
+        ra(pathRes.getRoutingPaths()).map(item -> item.getPath()).sort(),
         ra("/home/index", "/home/index/{ph1}/", "/home/index/haha",
             "/home/index/haha", "/home/index/haha", "/home/index/haha",
             "/home/index/haha", "/home/index/yaya").sort());
@@ -97,15 +88,8 @@ public class RoutingPathResolverTest {
 
   @Test
   public void testRawPath() {
-    assertEquals(ra(pathRes.getRoutingPaths())
-        .map(new TransformBlock<RoutingPath, String>() {
-
-          @Override
-          public String yield(RoutingPath item) {
-            return item.getRawPath();
-          }
-
-        }).sort(),
+    assertEquals(
+        ra(pathRes.getRoutingPaths()).map(item -> item.getRawPath()).sort(),
         ra("/home/index", "/home/index/{ph1}/", "/home/index/${test.var.1}",
             "/home/index/${test.var.1}", "/home/index/${test.var.1}",
             "/home/index/${test.var.1}", "/home/index/${test.var.1}",
@@ -114,15 +98,9 @@ public class RoutingPathResolverTest {
 
   @Test
   public void testRegexPath() {
-    assertEquals(ra(pathRes.getRoutingPaths())
-        .map(new TransformBlock<RoutingPath, String>() {
-
-          @Override
-          public String yield(RoutingPath item) {
-            return item.getRegexPath().pattern();
-          }
-
-        }).sort(),
+    assertEquals(
+        ra(pathRes.getRoutingPaths()).map(item -> item.getRegexPath().pattern())
+            .sort(),
         ra("/?home/index/?", "/?home/index/[^/]+/", "/?home/index/haha/?",
             "/?home/index/haha/?", "/?home/index/haha/?", "/?home/index/haha/?",
             "/?home/index/haha/?", "/?home/index/yaya/?").sort());
@@ -153,14 +131,8 @@ public class RoutingPathResolverTest {
   @Test
   public void testEmptyMethod() {
     assertTrue(ra(pathRes2.findByMethodAnnotationType(TestMethodAnno.class))
-        .map(new TransformBlock<RoutingPath, RequestMethod>() {
-
-          @Override
-          public RequestMethod yield(RoutingPath item) {
-            return item.getMethod();
-          }
-
-        }).containsAll(newArrayList(RequestMethod.values())));
+        .map(item -> item.getMethod())
+        .containsAll(newArrayList(RequestMethod.values())));
   }
 
   @Test
