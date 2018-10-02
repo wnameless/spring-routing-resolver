@@ -154,22 +154,9 @@ public final class RoutingPathResolver {
       @Override
       public boolean apply(RoutingPath item) {
         return !Iterables.any(item.getClassAnnotations(),
-            new Predicate<Annotation>() {
-
-              @Override
-              public boolean apply(Annotation item) {
-                return annoType.equals(item.annotationType());
-              }
-
-            }) && !Iterables.any(item.getMethodAnnotations(),
-                new Predicate<Annotation>() {
-
-                  @Override
-                  public boolean apply(Annotation item) {
-                    return annoType.equals(item.annotationType());
-                  }
-
-                });
+            ca -> annoType.equals(ca.annotationType()))
+            && !Iterables.any(item.getMethodAnnotations(),
+                ma -> annoType.equals(ma.annotationType()));
       }
 
     });
@@ -189,22 +176,8 @@ public final class RoutingPathResolver {
       final Class<? extends Annotation> annoType) {
     List<RoutingPath> paths = newArrayList(routingPaths);
 
-    Iterables.removeIf(paths, new Predicate<RoutingPath>() {
-
-      @Override
-      public boolean apply(RoutingPath input) {
-        return !Iterables.any(input.getClassAnnotations(),
-            new Predicate<Annotation>() {
-
-              @Override
-              public boolean apply(Annotation input) {
-                return annoType.equals(input.annotationType());
-              }
-
-            });
-      }
-
-    });
+    Iterables.removeIf(paths, rp -> !Iterables.any(rp.getClassAnnotations(),
+        ca -> annoType.equals(ca.annotationType())));
 
     return paths;
   }
@@ -221,22 +194,8 @@ public final class RoutingPathResolver {
       final Class<? extends Annotation> annoType) {
     List<RoutingPath> paths = newArrayList(routingPaths);
 
-    Iterables.removeIf(paths, new Predicate<RoutingPath>() {
-
-      @Override
-      public boolean apply(RoutingPath input) {
-        return !Iterables.any(input.getMethodAnnotations(),
-            new Predicate<Annotation>() {
-
-              @Override
-              public boolean apply(Annotation input) {
-                return annoType.equals(input.annotationType());
-              }
-
-            });
-      }
-
-    });
+    Iterables.removeIf(paths, rp -> !Iterables.any(rp.getMethodAnnotations(),
+        ma -> annoType.equals(ma.annotationType())));
 
     return paths;
   }
