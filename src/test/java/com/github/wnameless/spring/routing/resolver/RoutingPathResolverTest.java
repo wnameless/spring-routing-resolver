@@ -32,6 +32,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.github.wnameless.spring.routing.resolver.test.Application;
@@ -107,25 +108,31 @@ public class RoutingPathResolverTest {
   }
 
   @Test
-  public void testfindByAnnotationType() {
-    assertEquals(9, pathRes2.findByAnnotationType(TestTypeAnno.class).size());
+  public void testFindByAnnotationType() {
+    assertEquals(10, pathRes2.findByAnnotationType(TestTypeAnno.class).size());
     assertEquals(8, pathRes2.findByAnnotationType(TestMethodAnno.class).size());
   }
 
   @Test
-  public void testfindByClassAnnotationType() {
-    assertEquals(9,
+  public void testFindByClassAnnotationType() {
+    assertEquals(10,
         pathRes2.findByClassAnnotationType(TestTypeAnno.class).size());
     assertEquals(0,
         pathRes2.findByClassAnnotationType(TestMethodAnno.class).size());
   }
 
   @Test
-  public void testfindByMethodAnnotationType() {
+  public void testFindByMethodAnnotationType() {
     assertEquals(8,
         pathRes2.findByMethodAnnotationType(TestMethodAnno.class).size());
     assertEquals(0,
         pathRes2.findByMethodAnnotationType(TestTypeAnno.class).size());
+  }
+
+  @Test
+  public void testFindByParameterAnnotationType() {
+    assertEquals(1,
+        pathRes2.findByParameterAnnotationType(PathVariable.class).size());
   }
 
   @Test

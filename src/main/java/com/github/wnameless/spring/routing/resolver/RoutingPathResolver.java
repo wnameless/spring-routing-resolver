@@ -17,8 +17,6 @@
  */
 package com.github.wnameless.spring.routing.resolver;
 
-import static com.google.common.collect.Lists.newArrayList;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -44,7 +42,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
@@ -133,7 +130,7 @@ public final class RoutingPathResolver {
    * @return a list of {@link RoutingPath}
    */
   public List<RoutingPath> getRoutingPaths() {
-    return newArrayList(routingPaths);
+    return new ArrayList<>(routingPaths);
   }
 
   /**
@@ -146,18 +143,13 @@ public final class RoutingPathResolver {
    */
   public List<RoutingPath> findByAnnotationType(
       final Class<? extends Annotation> annoType) {
-    List<RoutingPath> paths = newArrayList(routingPaths);
+    List<RoutingPath> paths = new ArrayList<>(routingPaths);
 
-    Iterables.removeIf(paths, new Predicate<RoutingPath>() {
-
-      @Override
-      public boolean apply(RoutingPath item) {
-        return !Iterables.any(item.getClassAnnotations(),
-            ca -> annoType.equals(ca.annotationType()))
-            && !Iterables.any(item.getMethodAnnotations(),
-                ma -> annoType.equals(ma.annotationType()));
-      }
-
+    Iterables.removeIf(paths, item -> {
+      return !Iterables.any(item.getClassAnnotations(),
+          ca -> annoType.equals(ca.annotationType()))
+          && !Iterables.any(item.getMethodAnnotations(),
+              ma -> annoType.equals(ma.annotationType()));
     });
 
     return paths;
@@ -173,10 +165,28 @@ public final class RoutingPathResolver {
    */
   public List<RoutingPath> findByClassAnnotationType(
       final Class<? extends Annotation> annoType) {
-    List<RoutingPath> paths = newArrayList(routingPaths);
+    List<RoutingPath> paths = new ArrayList<>(routingPaths);
 
     Iterables.removeIf(paths, rp -> !Iterables.any(rp.getClassAnnotations(),
         ca -> annoType.equals(ca.annotationType())));
+
+    return paths;
+  }
+
+  /**
+   * Finds {@link RoutingPath}s by given annotation which only show on class
+   * level of a {@link RequestMapping}.
+   * 
+   * @param annoType
+   *          the class of an annotation
+   * @return founded {@link RoutingPath}
+   */
+  public List<RoutingPath> findByParameterAnnotationType(
+      final Class<? extends Annotation> annoType) {
+    List<RoutingPath> paths = new ArrayList<>(routingPaths);
+
+    Iterables.removeIf(paths, rp -> !Iterables.any(rp.getParameterAnnotations(),
+        pas -> Iterables.any(pas, pa -> annoType.equals(pa.annotationType()))));
 
     return paths;
   }
@@ -191,7 +201,7 @@ public final class RoutingPathResolver {
    */
   public List<RoutingPath> findByMethodAnnotationType(
       final Class<? extends Annotation> annoType) {
-    List<RoutingPath> paths = newArrayList(routingPaths);
+    List<RoutingPath> paths = new ArrayList<>(routingPaths);
 
     Iterables.removeIf(paths, rp -> !Iterables.any(rp.getMethodAnnotations(),
         ma -> annoType.equals(ma.annotationType())));
@@ -233,7 +243,7 @@ public final class RoutingPathResolver {
    * @return founded {@link RoutingPath}
    */
   public List<RoutingPath> findByRequestPath(String requestPath) {
-    List<RoutingPath> paths = newArrayList();
+    List<RoutingPath> paths = new ArrayList<>();
 
     for (RoutingPath routingPath : routingPaths) {
       if (routingPath.getPath().equals(requestPath)) {
@@ -248,62 +258,63 @@ public final class RoutingPathResolver {
 
   private List<Entry<String, RequestMethod>> computeRawPaths(
       RequestMapping classMapping, Annotation methodMapping) {
-    List<Entry<String, RequestMethod>> rawPathsAndMethods = newArrayList();
+    List<Entry<String, RequestMethod>> rawPathsAndMethods = new ArrayList<>();
 
-    List<String> prefixPaths = classMapping == null ? newArrayList("")
-        : classMapping.value().length != 0
-            ? newArrayList(ImmutableSet.copyOf(classMapping.value()))
-            : newArrayList(ImmutableSet.copyOf(classMapping.path()));
+    List<String> prefixPaths =
+        classMapping == null ? new ArrayList<>(Arrays.asList(""))
+            : classMapping.value().length != 0
+                ? new ArrayList<>(ImmutableSet.copyOf(classMapping.value()))
+                : new ArrayList<>(ImmutableSet.copyOf(classMapping.path()));
     if (prefixPaths.isEmpty()) prefixPaths.add("");
 
-    List<String> suffixPaths = newArrayList();
-    List<RequestMethod> requestMethods = newArrayList();
+    List<String> suffixPaths = new ArrayList<>();
+    List<RequestMethod> requestMethods = new ArrayList<>();
     if (methodMapping.annotationType().equals(RequestMapping.class)) {
       suffixPaths = ((RequestMapping) methodMapping).value().length != 0
-          ? newArrayList(
+          ? new ArrayList<>(
               ImmutableSet.copyOf(((RequestMapping) methodMapping).value()))
-          : newArrayList(
+          : new ArrayList<>(
               ImmutableSet.copyOf(((RequestMapping) methodMapping).path()));
 
       requestMethods
           .addAll(Arrays.asList(((RequestMapping) methodMapping).method()));
     } else if (methodMapping.annotationType().equals(GetMapping.class)) {
       suffixPaths = ((GetMapping) methodMapping).value().length != 0
-          ? newArrayList(
+          ? new ArrayList<>(
               ImmutableSet.copyOf(((GetMapping) methodMapping).value()))
-          : newArrayList(
+          : new ArrayList<>(
               ImmutableSet.copyOf(((GetMapping) methodMapping).path()));
 
       requestMethods.add(RequestMethod.GET);
     } else if (methodMapping.annotationType().equals(PostMapping.class)) {
       suffixPaths = ((PostMapping) methodMapping).value().length != 0
-          ? newArrayList(
+          ? new ArrayList<>(
               ImmutableSet.copyOf(((PostMapping) methodMapping).value()))
-          : newArrayList(
+          : new ArrayList<>(
               ImmutableSet.copyOf(((PostMapping) methodMapping).path()));
 
       requestMethods.add(RequestMethod.POST);
     } else if (methodMapping.annotationType().equals(DeleteMapping.class)) {
       suffixPaths = ((DeleteMapping) methodMapping).value().length != 0
-          ? newArrayList(
+          ? new ArrayList<>(
               ImmutableSet.copyOf(((DeleteMapping) methodMapping).value()))
-          : newArrayList(
+          : new ArrayList<>(
               ImmutableSet.copyOf(((DeleteMapping) methodMapping).path()));
 
       requestMethods.add(RequestMethod.DELETE);
     } else if (methodMapping.annotationType().equals(PutMapping.class)) {
       suffixPaths = ((PutMapping) methodMapping).value().length != 0
-          ? newArrayList(
+          ? new ArrayList<>(
               ImmutableSet.copyOf(((PutMapping) methodMapping).value()))
-          : newArrayList(
+          : new ArrayList<>(
               ImmutableSet.copyOf(((PutMapping) methodMapping).path()));
 
       requestMethods.add(RequestMethod.PUT);
     } else if (methodMapping.annotationType().equals(PatchMapping.class)) {
       suffixPaths = ((PatchMapping) methodMapping).value().length != 0
-          ? newArrayList(
+          ? new ArrayList<>(
               ImmutableSet.copyOf(((PatchMapping) methodMapping).value()))
-          : newArrayList(
+          : new ArrayList<>(
               ImmutableSet.copyOf(((PatchMapping) methodMapping).path()));
 
       requestMethods.add(RequestMethod.PATCH);

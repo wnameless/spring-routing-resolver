@@ -19,6 +19,8 @@ package com.github.wnameless.spring.routing.resolver.test.controller2.ctrl;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,6 +38,11 @@ public class TestController2 {
   @RequestMapping
   String home2() {
     return "home2";
+  }
+
+  @PutMapping("/c/{cc}")
+  String home3(@PathVariable(required = false) String cc) {
+    return "home3";
   }
 
 }
