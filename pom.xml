@@ -87,9 +87,6 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<argLine>--add-modules com.google.gson,com.fasterxml.jackson.core,com.fasterxml.jackson.databind</argLine>
-				</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-failsafe-plugin</artifactId>
