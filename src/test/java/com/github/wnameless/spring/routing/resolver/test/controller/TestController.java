@@ -15,7 +15,7 @@
  * the License.
  *
  */
-package com.github.wnameless.spring.controller;
+package com.github.wnameless.spring.routing.resolver.test.controller;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.github.wnameless.spring.controller2.ctrl.TestTypeAnno;
+import com.github.wnameless.spring.routing.resolver.test.controller2.ctrl.TestTypeAnno;
 
 @TestTypeAnno
 @RequestMapping("/home")

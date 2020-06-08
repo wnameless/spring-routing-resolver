@@ -18,13 +18,13 @@
 package com.github.wnameless.spring.routing.resolver;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Sets.newLinkedHashSet;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -65,7 +65,7 @@ public final class RoutingPathResolver {
   private static final Pattern ANT_Q = Pattern.compile("\\?");
 
   private final Environment env;
-  private final Set<RoutingPath> routingPaths = newLinkedHashSet();
+  private final Set<RoutingPath> routingPaths = new LinkedHashSet<>();
 
   /**
    * Creates a {@link RoutingPathResolver}.

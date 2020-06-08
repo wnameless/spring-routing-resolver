@@ -15,16 +15,13 @@
  * the License.
  *
  */
-package com.github.wnameless.spring;
+package com.github.wnameless.spring.routing.resolver.test.controller2.ctrl;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-@SpringBootApplication
-public class Application {
-
-  public static void main(String... args) {
-    SpringApplication.run(Application.class, args);
-  }
-
-}
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface TestTypeAnno {}

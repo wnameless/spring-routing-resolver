@@ -15,7 +15,7 @@
  * the License.
  *
  */
-package com.github.wnameless.spring.controller2.ctrl;
+package com.github.wnameless.spring.routing.resolver.test.controller2.ctrl;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 

@@ -18,18 +18,19 @@
 package com.github.wnameless.spring.routing.resolver;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.unmodifiableList;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.collect.ForwardingList;
 
 /**
@@ -47,7 +48,7 @@ public final class RoutingPath {
   private final Pattern regexPath;
   private final List<Annotation> classAnnotations;
   private final List<Annotation> methodAnnotations;
-  private final List<List<Annotation>> parameterAnnotations = newArrayList();
+  private final List<List<Annotation>> parameterAnnotations = new ArrayList<>();
 
   /**
    * Creates an {@link RoutingPath}.
@@ -73,10 +74,10 @@ public final class RoutingPath {
     this.rawPath = checkNotNull(rawPath);
     this.regexPath = checkNotNull(regexPath);
     this.path = checkNotNull(path);
-    this.classAnnotations = newArrayList(classAnnotations);
-    this.methodAnnotations = newArrayList(methodAnnotations);
+    this.classAnnotations = new ArrayList<>(Arrays.asList(classAnnotations));
+    this.methodAnnotations = new ArrayList<>(Arrays.asList(methodAnnotations));
     for (Annotation[] annos : parameterAnnotations) {
-      this.parameterAnnotations.add(newArrayList(annos));
+      this.parameterAnnotations.add(new ArrayList<>(Arrays.asList(annos)));
     }
   }
 
@@ -162,18 +163,19 @@ public final class RoutingPath {
     if (this == other) return true;
     if (!(other instanceof RoutingPath)) return false;
     RoutingPath castOther = (RoutingPath) other;
-    return Objects.equal(method, castOther.method)
-        && Objects.equal(rawPath, castOther.rawPath)
-        && Objects.equal(path, castOther.path)
-        && Objects.equal(regexPath, castOther.regexPath)
-        && Objects.equal(classAnnotations, castOther.classAnnotations)
-        && Objects.equal(methodAnnotations, castOther.methodAnnotations);
+    return Objects.equals(method, castOther.method)
+        && Objects.equals(rawPath, castOther.rawPath)
+        && Objects.equals(path, castOther.path)
+        && Objects.equals(regexPath, castOther.regexPath)
+        && Objects.equals(classAnnotations, castOther.classAnnotations)
+        && Objects.equals(methodAnnotations, castOther.methodAnnotations)
+        && Objects.equals(parameterAnnotations, castOther.parameterAnnotations);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(method, rawPath, path, regexPath, classAnnotations,
-        methodAnnotations);
+    return Objects.hash(method, rawPath, path, regexPath, classAnnotations,
+        methodAnnotations, parameterAnnotations);
   }
 
   @Override
@@ -181,7 +183,8 @@ public final class RoutingPath {
     return MoreObjects.toStringHelper(this).add("method", method)
         .add("rawPath", rawPath).add("path", path).add("regexPath", regexPath)
         .add("classAnnotations", classAnnotations)
-        .add("methodAnnotations", methodAnnotations).toString();
+        .add("methodAnnotations", methodAnnotations)
+        .add("parameterAnnotations", parameterAnnotations).toString();
   }
 
 }

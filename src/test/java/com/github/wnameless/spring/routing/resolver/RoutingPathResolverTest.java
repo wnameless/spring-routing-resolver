@@ -15,7 +15,7 @@
  * the License.
  *
  */
-package com.github.wnameless.spring.routing;
+package com.github.wnameless.spring.routing.resolver;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static net.sf.rubycollect4j.RubyCollections.ra;
@@ -34,11 +34,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.github.wnameless.spring.Application;
-import com.github.wnameless.spring.controller2.ctrl.TestMethodAnno;
-import com.github.wnameless.spring.controller2.ctrl.TestTypeAnno;
-import com.github.wnameless.spring.routing.resolver.RoutingPath;
-import com.github.wnameless.spring.routing.resolver.RoutingPathResolver;
+import com.github.wnameless.spring.routing.resolver.test.Application;
+import com.github.wnameless.spring.routing.resolver.test.controller2.ctrl.TestMethodAnno;
+import com.github.wnameless.spring.routing.resolver.test.controller2.ctrl.TestTypeAnno;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 
@@ -62,11 +60,11 @@ public class RoutingPathResolverTest {
   @BeforeEach
   public void setUp() {
     pathRes = new RoutingPathResolver(appCtx,
-        "com.github.wnameless.spring.controller");
+        "com.github.wnameless.spring.routing.resolver.test.controller");
     pathRes2 = new RoutingPathResolver(appCtx,
-        "com.github.wnameless.spring.controller2");
+        "com.github.wnameless.spring.routing.resolver.test.controller2");
     pathRes3 = new RoutingPathResolver(appCtx,
-        "com.github.wnameless.spring.controller3");
+        "com.github.wnameless.spring.routing.resolver.test.controller3");
   }
 
   @Test

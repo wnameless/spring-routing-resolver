@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2015 Wei-Ming Wu
+ * Copyright 2016 Wei-Ming Wu
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,13 +15,21 @@
  * the License.
  *
  */
-package com.github.wnameless.spring.controller2.ctrl;
+package com.github.wnameless.spring.routing.resolver.test.controller3;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface TestTypeAnno {}
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class TestController3 {
+
+  @RequestMapping(
+      value = "/ant/${test.var.1}/${test.var.3}/{aaa}/**/*/a+b-c?.json",
+      method = POST)
+  String ant() {
+    return "ant";
+  }
+
+}

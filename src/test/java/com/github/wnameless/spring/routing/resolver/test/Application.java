@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2016 Wei-Ming Wu
+ * Copyright 2015 Wei-Ming Wu
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,21 +15,16 @@
  * the License.
  *
  */
-package com.github.wnameless.spring.controller3;
+package com.github.wnameless.spring.routing.resolver.test;
 
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+@SpringBootApplication
+public class Application {
 
-@RestController
-public class TestController3 {
-
-  @RequestMapping(
-      value = "/ant/${test.var.1}/${test.var.3}/{aaa}/**/*/a+b-c?.json",
-      method = POST)
-  String ant() {
-    return "ant";
+  public static void main(String... args) {
+    SpringApplication.run(Application.class, args);
   }
 
 }
