@@ -19,28 +19,30 @@ package com.github.wnameless.spring.routing;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static net.sf.rubycollect4j.RubyCollections.ra;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.github.wnameless.spring.Application;
 import com.github.wnameless.spring.controller2.ctrl.TestMethodAnno;
 import com.github.wnameless.spring.controller2.ctrl.TestTypeAnno;
+import com.github.wnameless.spring.routing.resolver.RoutingPath;
+import com.github.wnameless.spring.routing.resolver.RoutingPathResolver;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Application.class,
     webEnvironment = WebEnvironment.MOCK)
 public class RoutingPathResolverTest {
@@ -57,7 +59,7 @@ public class RoutingPathResolverTest {
 
   RoutingPathResolver pathRes3;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     pathRes = new RoutingPathResolver(appCtx,
         "com.github.wnameless.spring.controller");

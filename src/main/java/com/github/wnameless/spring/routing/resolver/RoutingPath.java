@@ -15,7 +15,7 @@
  * the License.
  *
  */
-package com.github.wnameless.spring.routing;
+package com.github.wnameless.spring.routing.resolver;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayList;

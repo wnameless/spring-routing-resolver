@@ -15,7 +15,7 @@
  * the License.
  *
  */
-package com.github.wnameless.regex;
+package com.github.wnameless.spring.routing.resolver;
 
 import java.util.ArrayList;
 import java.util.List;
