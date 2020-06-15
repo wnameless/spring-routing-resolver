@@ -1,4 +1,4 @@
-module com.github.wnameless.spring.routing.resolver {
+open module com.github.wnameless.spring.routing.resolver {
   requires com.google.common;
   requires spring.core;
   requires spring.beans;
