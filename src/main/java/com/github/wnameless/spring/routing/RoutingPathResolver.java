@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -86,20 +87,20 @@ public final class RoutingPathResolver {
 
     for (Object bean : beans.values()) {
       RequestMapping classMapping =
-          bean.getClass().getAnnotation(RequestMapping.class);
+          ClassUtils.getUserClass(bean.getClass()).getAnnotation(RequestMapping.class);
 
       List<Method> mappingMethods =
-          getMethodsListWithAnnotation(bean.getClass(), RequestMapping.class);
+          getMethodsListWithAnnotation(ClassUtils.getUserClass(bean.getClass()), RequestMapping.class);
       mappingMethods.addAll(
-          getMethodsListWithAnnotation(bean.getClass(), GetMapping.class));
+          getMethodsListWithAnnotation(ClassUtils.getUserClass(bean.getClass()), GetMapping.class));
       mappingMethods.addAll(
-          getMethodsListWithAnnotation(bean.getClass(), PostMapping.class));
+          getMethodsListWithAnnotation(ClassUtils.getUserClass(bean.getClass()), PostMapping.class));
       mappingMethods.addAll(
-          getMethodsListWithAnnotation(bean.getClass(), DeleteMapping.class));
+          getMethodsListWithAnnotation(ClassUtils.getUserClass(bean.getClass()), DeleteMapping.class));
       mappingMethods.addAll(
-          getMethodsListWithAnnotation(bean.getClass(), PutMapping.class));
+          getMethodsListWithAnnotation(ClassUtils.getUserClass(bean.getClass()), PutMapping.class));
       mappingMethods.addAll(
-          getMethodsListWithAnnotation(bean.getClass(), PatchMapping.class));
+          getMethodsListWithAnnotation(ClassUtils.getUserClass(bean.getClass()), PatchMapping.class));
 
       for (Method method : mappingMethods) {
         Annotation methodMapping = method.getAnnotation(RequestMapping.class);
@@ -121,7 +122,7 @@ public final class RoutingPathResolver {
           String regexPath = computeRegexPath(path);
           routingPaths
               .add(new RoutingPath(rawPathAndMethod.getValue(), rawPath, path,
-                  Pattern.compile(regexPath), bean.getClass().getAnnotations(),
+                  Pattern.compile(regexPath), ClassUtils.getUserClass(bean.getClass()).getAnnotations(),
                   method.getAnnotations(), method.getParameterAnnotations()));
         }
       }
